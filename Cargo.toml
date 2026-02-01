@@ -1,0 +1,11 @@
+[package]
+name = "sysctl-conf-parser"
+version = "0.1.0"
+edition = "2021"
+description = "Parse sysctl.conf-style files into nested maps"
+
+[lib]
+name = "sysctl_conf"
+path = "src/lib.rs"
+
+[dependencies]
