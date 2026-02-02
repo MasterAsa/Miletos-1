@@ -7,6 +7,13 @@
 //!
 //! Dot notation in keys creates nested maps: `log.file = path` → `log: { file: "path" }`.
 
+pub mod schema;
+
+pub use schema::{
+    load_schema, parse_schema_str, validate, Schema, SchemaLoadError, SchemaParseError,
+    SchemaType, SchemaValidationError,
+};
+
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;

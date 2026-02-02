@@ -1,0 +1,7 @@
+# Schema: same grammar as sysctl.conf(5). key = type
+# Types: string, bool, integer, float
+endpoint = string
+debug = bool
+log.file = string
+log.name = string
+retry = integer

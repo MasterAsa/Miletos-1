@@ -10,29 +10,46 @@ Parse sysctl.conf-style configuration files into nested maps (dictionary structu
 
 Dot notation in keys creates nested maps: `log.file = /var/log/app.log` becomes `log: { file: "/var/log/app.log" }`.
 
+## Schema validation
+
+Schema files use the same grammar as sysctl.conf(5): `key = type` per line. Supported types: `string`, `bool`, `integer`, `float` (aliases: `boolean`, `int`, `number`). Dot notation is supported.
+
+Example schema (`sample.schema`):
+
+```
+endpoint = string
+debug = bool
+log.file = string
+retry = integer
+```
+
+- Every key in the config must be defined in the schema.
+- Values are validated against the schema type (e.g. `debug = true` is valid for `bool`; `retry = abc` is invalid for `integer`).
+- Validation errors report the key, expected type, and actual value.
+
 ## Usage (library)
 
 ```rust
-use sysctl_conf::{parse_str, load_file, Value};
+use sysctl_conf::{parse_str, load_file, load_schema, validate, Value};
 
-// From string
-let input = r#"
-endpoint = localhost:3000
-log.file = /var/log/console.log
-"#;
+// Parse config
 let map = parse_str(input)?;
-
-// From file
+// or
 let map = load_file("config.conf")?;
 
-// Access: map is HashMap<String, Value>
-// Value is either String(s) or Map(HashMap<String, Value>)
+// Optional: validate against schema
+let schema = load_schema("schema.conf")?;
+validate(&map, &schema)?;
 ```
 
 ## Example
 
 ```bash
+# Parse only
 cargo run --example parse_file -- examples/sample1.conf
+
+# Parse and validate with schema
+cargo run --example parse_file -- examples/sample1.conf examples/sample.schema
 ```
 
 ## Tests
